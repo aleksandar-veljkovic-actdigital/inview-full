@@ -40,7 +40,13 @@
 
       $('body > div.two').on('inviewFull', {offsetTop: 250, offsetBot: 250},function(event, isInView){
         //console.log("--------------------------------------------------");
-        //console.log(event);
+        console.log(2);
+        console.log(isInView);
+      });
+      
+      $('body > div.three').on('inviewFull', {offsetTop: 250, offsetBot: 250},function(event, isInView){
+        //console.log("--------------------------------------------------");
+        console.log(3);
         console.log(isInView);
       });
 

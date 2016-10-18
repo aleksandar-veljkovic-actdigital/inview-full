@@ -29,7 +29,7 @@
 
   var inviewFull = function (handleObj, $el) {
     
-    _this = this;
+    var _this = this;
 
     this.timer;
     
