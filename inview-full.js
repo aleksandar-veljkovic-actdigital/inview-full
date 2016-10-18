@@ -19,23 +19,25 @@
   var public = {};
 
   var timer;
-  var set;
+  var set = {};
   var $el;
   var inView = false;
 
 
 
   $.event.special.inviewFull = {
-    add: function (handleObj) {      
+    add: function (handleObj) {
       $el = $(this);
-      var domSet = $el.data('inviewFull') || {};
-      set = handleObj.data || domSet || {};
-      set.interval = set.inerval || domSet.inerval || 250;
-      set.includeMargin = set.includeMargin || domSet.includeMargin || false;
-      set.offsetTop = set.offsetTop || domSet.offsetTop || 0;
-      set.offsetTop = set.offsetBot || domSet.offsetBot || 0;
+      var domData = $el.data('inviewFull') || {};
+      domData.set = domData.set || {};
+      handleObj.data = handleObj.data || {};      
+      set.interval = handleObj.data.inerval || domData.set.inerval || 250;
+      set.includeMargin = handleObj.data.includeMargin || domData.set.includeMargin || false;
+      set.offsetTop = handleObj.data.offsetTop || domData.set.offsetTop || 0;
+      set.offsetBot = handleObj.data.offsetBot || domData.set.offsetBot || 0;
       timer = setInterval(public.main, set.interval);
       
+      console.log(set);
 
     },
     remove: function (handleObj) {
@@ -68,7 +70,8 @@
     var bound = $el[0].getBoundingClientRect();
     var elTop = Math.round(bound.top);
     var elBot = Math.round(window.innerHeight - bound.bottom);
-    if (elTop <= 0 && elBot <= 0) {
+    //console.log(set.offsetTop);
+    if ((elTop - set.offsetTop) <= 0 && (elBot - set.offsetBot) <= 0) {
       return true;
     }
     return false;
@@ -78,7 +81,7 @@
     var bound = $el[0].getBoundingClientRect();
     var elTop = Math.round(bound.top);
     var elBot = Math.round(window.innerHeight - bound.bottom);
-    if (elTop >= 0 && elBot >= 0) {
+    if ((elTop + set.offsetTop) >= 0 && (elBot + set.offsetBot) >= 0) {
       return true;
     }
     return false;

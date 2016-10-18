@@ -3,7 +3,7 @@
   "authors": [
     "Aleksandar Veljkovic <aleksandar.veljkovic@diwanee.com>"
   ],
-  "description": "A jQuery plugin that adds a bindable 'inviewfull' event for detecting when an element is scrolled into view.",
+  "description": "A jQuery plugin that adds a bindable 'inviewFull' event for detecting when an element is fully scrolled into view.",
   "main": "diwanee-inview.js",
   "keywords": [
     "jquery",
