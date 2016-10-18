@@ -16,78 +16,83 @@
   }
 }(function ($) {
 
-  var public = {};
-
-  var timer;
-  var set = {};
-  var $el;
-  var inView = false;
-
-
-
   $.event.special.inviewFull = {
     add: function (handleObj) {
       $el = $(this);
-      var domData = $el.data('inviewFull') || {};
-      domData.set = domData.set || {};
-      handleObj.data = handleObj.data || {};      
-      set.interval = handleObj.data.inerval || domData.set.inerval || 250;
-      set.includeMargin = handleObj.data.includeMargin || domData.set.includeMargin || false;
-      set.offsetTop = handleObj.data.offsetTop || domData.set.offsetTop || 0;
-      set.offsetBot = handleObj.data.offsetBot || domData.set.offsetBot || 0;
-      timer = setInterval(public.main, set.interval);
-      
-      console.log(set);
-
+      $el.data('inviewFull', new inviewFull(handleObj, $el));
+      $el.data('inviewFull').start();
     },
     remove: function (handleObj) {
-      clearInterval(timer);
+      $el.data('inviewFull').stop();
     }
   };
 
-  public.main = function () {
-    if (public.isInView() && !inView) {
-      inView = true;
-      $el.trigger('inviewFull', true);      
-    }
-    else if (!public.isInView() && inView) {
-      inView = false;
-      $el.trigger('inviewFull', false);
-    }
+  var inviewFull = function (handleObj, $el) {
+    
+    _this = this;
+
+    this.timer;
+    
+    this.set = {};
+
+    this.inView = false;
+
+    this.start = function () {
+      handleObj.data = handleObj.data || {};
+      this.set.interval = handleObj.data.inerval || 250;
+      this.set.includeMargin = handleObj.data.includeMargin || false;
+      this.set.offsetTop = handleObj.data.offsetTop || 0;
+      this.set.offsetBot = handleObj.data.offsetBot || 0;
+      this.timer = setInterval(this.main, this.set.interval);
+    };
+
+    this.stop = function () {
+      clearInterval(this.timer);
+    };
+
+
+
+    this.main = function () {
+      if (_this.isInView() && !_this.inView) {
+        _this.inView = true;
+        $el.trigger('inviewFull', true);
+      } else if (!_this.isInView() && _this.inView) {
+        _this.inView = false;
+        $el.trigger('inviewFull', false);
+      }
+    };
+
+    this.isInView = function () {
+      var elH = $el.outerHeight(this.set.includeMargin);
+      var vpH = window.innerHeight;
+      if (elH > vpH) {
+        return this.isInViewBigEl();
+      } else {
+        return this.isInViewSmlEl();
+      }
+    };
+
+    this.isInViewBigEl = function () {
+      var bound = $el[0].getBoundingClientRect();
+      var elTop = Math.round(bound.top);
+      var elBot = Math.round(window.innerHeight - bound.bottom);
+      if ((elTop - this.set.offsetTop) <= 0 && (elBot - this.set.offsetBot) <= 0) {
+        return true;
+      }
+      return false;
+    };
+
+    this.isInViewSmlEl = function () {
+      var bound = $el[0].getBoundingClientRect();
+      var elTop = Math.round(bound.top);
+      var elBot = Math.round(window.innerHeight - bound.bottom);
+      if ((elTop + this.set.offsetTop) >= 0 && (elBot + this.set.offsetBot) >= 0) {
+        return true;
+      }
+      return false;
+
+    };
+
   };
-
-  public.isInView = function () {
-    var elH = $el.outerHeight(set.includeMargin);
-    var vpH = window.innerHeight;
-    if (elH > vpH) {
-      return public.isInViewBigEl();
-    } else {
-      return public.isInViewSmlEl();
-    }
-  };
-
-  public.isInViewBigEl = function () {
-    var bound = $el[0].getBoundingClientRect();
-    var elTop = Math.round(bound.top);
-    var elBot = Math.round(window.innerHeight - bound.bottom);
-    //console.log(set.offsetTop);
-    if ((elTop - set.offsetTop) <= 0 && (elBot - set.offsetBot) <= 0) {
-      return true;
-    }
-    return false;
-  };
-
-  public.isInViewSmlEl = function () {
-    var bound = $el[0].getBoundingClientRect();
-    var elTop = Math.round(bound.top);
-    var elBot = Math.round(window.innerHeight - bound.bottom);
-    if ((elTop + set.offsetTop) >= 0 && (elBot + set.offsetBot) >= 0) {
-      return true;
-    }
-    return false;
-
-  };
-
-
 
 }));
