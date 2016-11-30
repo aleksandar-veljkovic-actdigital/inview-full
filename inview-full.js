@@ -15,7 +15,7 @@
     factory(jQuery);
   }
 }(function ($) {
-
+  var $el;
   $.event.special.inviewFull = {
     add: function (handleObj) {
       $el = $(this);
